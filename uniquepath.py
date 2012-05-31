@@ -2,14 +2,14 @@
 
 """Removes duplicates in a PATH-like environment variable."""
 
-__version__ = '$Revision$'
+__version__ = '0.70'
 
 
 import re
 import os
 import sys
 import logging
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 
 def is_word(val):
@@ -18,24 +18,21 @@ def is_word(val):
     return match is None
 
 
-def normalize(path):
-    path = os.path.normpath(path)
-    path = os.path.normcase(path)
-    return path
+def normalize(pth):
+    """Simply calls os.path.normpath for now."""
+    norm_pth = os.path.normpath(pth)
+    return norm_pth
 
 
 class VariableManipulator(object):
     """Algortihms to manipulate environment variables."""
-    def __init__(self, val, separator=None, is_case_sensitive=None):
-        self.is_case_sensitive = False  # Windows default.
-        self.separator = ';'  # Windows default.
+    def __init__(self, val, separator=None):
+        self.separator = os.pathsep
         self.elements = []
         if separator:
             self.separator = separator
-        if is_case_sensitive:
-            self.is_case_sensitive = is_case_sensitive
         if val:
-            self.elements = [normalize(path) 
+            self.elements = [normalize(path)
                     for path in val.split(self.separator)]
 
     def get_value(self):
@@ -72,47 +69,49 @@ class VariableManipulator(object):
 if __name__ == '__main__':
     filename = os.path.basename(__file__)
     epilog = "On Windows: use {prog}.bat helper script.".format(prog=filename)
-    parser = OptionParser(
-            usage="usage: %prog [options] <variable name|variable value>.",
-            version="%prog " + __version__, epilog=epilog)
-    parser.add_option("-r", "--remove", dest="remove",
+    parser = ArgumentParser(version=__version__, epilog=epilog)
+    parser.add_argument("-r", "--remove", dest="remove",
             action="append", metavar="PATH",
-            help="remove value(s) from the environment variable")
-    parser.add_option("-a", "--append", dest="append",
+            help="remove value(s) from the environment variable.")
+    parser.add_argument("-a", "--append", dest="append",
             action="append", metavar="PATH",
-            help="append value(s) to the environment variable")
-    parser.add_option("-p", "--prepend", dest="prepend",
+            help="append value(s) to the environment variable.")
+    parser.add_argument("-p", "--prepend", dest="prepend",
             action="append", metavar="PATH",
-            help="prepend value(s) to the environment variable")
-
-    (options, args) = parser.parse_args()
-    if not args:
-        raise parser.error("missing argument")
-    if len(args) > 1:
-        raise parser.error("more than one argument found")
+            help="prepend value(s) to the environment variable.")
+    parser.add_argument("--separator", dest="sep", metavar="CHAR",
+            help="changes the path separator (default is os specific).")
+    parser.add_argument("--debug", action='store_true',
+            help="different output format more readable but invalid. " +
+            "DO NOT ASSIGN to an environment variable.")
+    parser.add_argument("variable",
+            help="environment variable or variable value to process.")
+    arguments = parser.parse_args()
     variable_name = None
-    value = args[0]  # Could be a variable name.
+    value = arguments.variable  # Could be a variable name.
     if is_word(value):  # If so, converts it to the value.
         variable_name = value
         value = os.getenv(variable_name)
-    manipulator = VariableManipulator(value)
-    if options.remove:
-        for path in options.remove:
+    manipulator = VariableManipulator(value, separator=arguments.sep)
+    if arguments.remove:
+        for path in arguments.remove:
             manipulator.remove_path(path)
-    if options.append:
-        for path in options.append:
+    if arguments.append:
+        for path in arguments.append:
             logging.info("adding {0} to {1}".format(path, manipulator))
             manipulator.append_path(path)
-    if options.prepend:
-        for path in options.prepend:
+    if arguments.prepend:
+        for path in arguments.prepend:
             logging.info("prepending {0} to {1}".format(path, manipulator))
             manipulator.prepend_path(path)
     manipulator.remove_duplicate_paths()
     value = manipulator.get_value()
     output = ""
-    if sys.platform == 'win32':
-        output = "set {0}={1}".format(variable_name, value)
+    if arguments.debug:
+        output = "\n".join(manipulator.elements)
     else:
-        output = "{0}".format(manipulator.get_value())
-    logging.info(output)
+        if sys.platform == 'win32':
+            output = "set {0}={1}".format(variable_name, value)
+        else:
+            output = "{0}".format(manipulator.get_value())
     print(output)
