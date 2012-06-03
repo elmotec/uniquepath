@@ -1,7 +1,21 @@
 uniquepath
 ==========
 
-Simple utility to manage PATH-like environment variables.
+Simple utility to remove duplicate in PATH-like environment variables. 
+
+On Unix, it outputs the transformed variable so it can be used like this :
+
+::
+
+  $ PATH=`uniquepath.py PATH`
+
+On Windows, there is a helper ``.bat`` script that achieve the same effect (even if it is not as explicit):
+
+::
+
+  C:\uniquepath.bat PATH
+
+The command line also offers ways to append, prepend, and remove path to the variable and it supports wildcard (usefull for remove).
 
 Usage
 -----
@@ -28,20 +42,14 @@ Usage
     --debug               different output format more readable but invalid. DO
                           NOT ASSIGN to an environment variable.
   
-  On Windows: use uniquepath.py.bat helper script.
+  On Windows: use uniquepath.bat helper script.
   
-There are also a few `.bat` example in the directory.  
+There are also 2 usage examples in the directory ``pyenv.bat`` (to switch python version) and the helper script ``uniquepath.bat`` for windows.
 
 Installation
 ------------
 
 Download uniquepath.py from http://github.com/elmotec/uniquepath
-
-
-Plans
------
-
-- Handle wildcards.
 
 
 License
