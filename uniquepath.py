@@ -2,13 +2,14 @@
 
 """Removes duplicates in a PATH-like environment variable."""
 
-__version__ = '0.70'
+__version__ = '1.00'
 
 
 import re
 import os
 import sys
 import logging
+import fnmatch
 from argparse import ArgumentParser
 
 
@@ -62,12 +63,12 @@ class VariableManipulator(object):
 
     def remove_path(self, pth):
         """Removes specific pth."""
-        up_path = pth.upper()
-        self.elements = [el for el in self.elements if el.upper() != up_path]
+        self.elements = [el for el in self.elements if 
+                not fnmatch.fnmatch(el, pth)]
 
 
 if __name__ == '__main__':
-    filename = os.path.basename(__file__)
+    filename, ext = os.path.splitext(os.path.basename(__file__))
     epilog = "On Windows: use {prog}.bat helper script.".format(prog=filename)
     parser = ArgumentParser(version=__version__, epilog=epilog)
     parser.add_argument("-r", "--remove", dest="remove",
