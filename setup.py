@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# vim: set encoding=utf-8
+
 import os
 from setuptools import setup
 
@@ -11,7 +14,7 @@ def read(fname):
 setup(
     name = "uniquepath",
     version = "1.0",
-    author = "Jerome Lecomte",
+    author = "Jérôme Lecomte",
     author_email = "jlecomte1972@yahoo.com",
     description = 'Simple utility to remove duplicate and manipulate PATH-like environment variables (e.g. LD_LIBRARY_PATH, MANPATH).',
     license = "MIT",

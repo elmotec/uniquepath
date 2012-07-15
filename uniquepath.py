@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+# vim: set encoding=utf-8
 
 """Removes duplicates in a PATH-like environment variable."""
 
-# Copyright (c) 2012 Jerome Lecomte
+# Copyright (c) 2012 Jérôme Lecomte
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +25,7 @@
 
 
 __version__ = '1.00'  # update setup.py when changing this line.
-__author__ = 'Jerome Lecomte'
+__author__ = 'Jérôme Lecomte'
 __license__ = 'MIT'
 
 
