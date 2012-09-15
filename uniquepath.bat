@@ -7,12 +7,12 @@ for %%a in (%*) do (
     if "%%a" == "--debug" goto nocall
 )
 
-C:\Python27\python.exe %~dp0\uniquepath.py %* > %TMP%\uniquepath_helper.bat
+python.exe %~dp0\uniquepath.py %* > %TMP%\uniquepath_helper.bat
 call %TMP%\uniquepath_helper.bat
 goto end
 
 :nocall
-C:\Python27\python.exe %~dp0\uniquepath.py %*
+python.exe %~dp0\uniquepath.py %*
 
 :end
 exit /B %ERRORLEVEL%
