@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-# vim: set encoding=utf-8
 
 """Removes duplicates in a PATH-like environment variable."""
 
-# Copyright (c) 2012 Jérôme Lecomte
+# Copyright (c) 2012 Jerome Lecomte
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +24,7 @@
 
 
 __version__ = '1.00'  # update setup.py when changing this line.
-__author__ = 'Jérôme Lecomte'
+__author__ = 'Jerome Lecomte'
 __license__ = 'MIT'
 
 
@@ -94,7 +93,9 @@ class VariableManipulator(object):
 if __name__ == '__main__':
     filename, ext = os.path.splitext(os.path.basename(__file__))
     epilog = "On Windows: use {prog}.bat helper script.".format(prog=filename)
-    parser = ArgumentParser(version=__version__, epilog=epilog)
+    parser = ArgumentParser(epilog=epilog)
+    parser.add_argument("-v", "--version", action='version',
+                        version=__version__)
     parser.add_argument("-r", "--remove", dest="remove",
             action="append", metavar="PATH",
             help="remove value(s) from the environment variable.")
