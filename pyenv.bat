@@ -1,10 +1,19 @@
-@echo off
-
 @rem remove any PYTHONHOME setting.
-set PYTHONHOME=
+@set PYTHONHOME=
 
-if "%1" == "3" call uniquepath --remove *Python* --append C:\Python32 --append C:\Python32\scripts PATH
-if "%1" == "2" call uniquepath --remove *Python* --append C:\Python27 --append C:\Python27\scripts PATH
+@rem first sets python path so we can run uniquepath.
+@set PYTHON=C:\Python%1
+@dir %PYTHON% > NUL
+@if ERRORLEVEL 1 GOTO FAILED
 
-exit /B %ERRORLEVEL%
+@set PATH=%PATH%;%PYTHON%
+call uniquepath --remove *Python* --append %PYTHON% --append %PYTHON%\Scripts PATH
+@goto SUCCESS
+
+:FAILED
+@echo %PYTHON% is not a valid directory.
+@set ERRORLEVEL=1
+
+:SUCCESS
+@exit /B %ERRORLEVEL%
 
