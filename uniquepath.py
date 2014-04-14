@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+# vim: set encoding=utf-8
 
 """Removes duplicates in a PATH-like environment variable."""
 
-# Copyright (c) 2012 Jerome Lecomte
+# Copyright (c) 2012 Jérôme Lecomte
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +24,7 @@
 # THE SOFTWARE.
 
 
-__version__ = '1.00'  # update setup.py when changing this line.
+__version__ = '1.00' # update setup.py when changing this line.
 __author__ = 'Jerome Lecomte'
 __license__ = 'MIT'
 
@@ -81,12 +82,12 @@ class VariableManipulator(object):
     def prepend_path(self, pth):
         """Prepends pth at the begining of the variable."""
         if not os.path.exists(pth):
-            raise RuntimeError("invalid pth")
+            logging.warning("invalid path: {}".format(pth))
         self.elements.insert(0, pth)
 
     def remove_path(self, pth):
         """Removes specific pth."""
-        self.elements = [el for el in self.elements if 
+        self.elements = [el for el in self.elements if
                 not fnmatch.fnmatch(el, pth)]
 
 
@@ -94,17 +95,20 @@ if __name__ == '__main__':
     filename, ext = os.path.splitext(os.path.basename(__file__))
     epilog = "On Windows: use {prog}.bat helper script.".format(prog=filename)
     parser = ArgumentParser(epilog=epilog)
-    parser.add_argument("-v", "--version", action='version',
-                        version=__version__)
+    if sys.version_info < (3, 0, 0):
+        parser = ArgumentParser(version=__version__, epilog=epilog)
+    else:
+        parser.add_argument('-v', '--version', action='version',
+                            version=__version__)
     parser.add_argument("-r", "--remove", dest="remove",
-            action="append", metavar="PATH",
-            help="remove value(s) from the environment variable.")
+                        action="append", metavar="PATH",
+                        help="remove value(s) from the environment variable.")
     parser.add_argument("-a", "--append", dest="append",
-            action="append", metavar="PATH",
-            help="append value(s) to the environment variable.")
+                        action="append", metavar="PATH",
+                        help="append value(s) to the environment variable.")
     parser.add_argument("-p", "--prepend", dest="prepend",
-            action="append", metavar="PATH",
-            help="prepend value(s) to the environment variable.")
+                        action="append", metavar="PATH",
+                        help="prepend value(s) to the environment variable.")
     parser.add_argument("--separator", dest="sep", metavar="CHAR",
             help="changes the path separator (default is os specific).")
     parser.add_argument("--debug", action='store_true',
@@ -114,8 +118,8 @@ if __name__ == '__main__':
             help="environment variable or variable value to process.")
     arguments = parser.parse_args()
     variable_name = None
-    value = arguments.variable  # Could be a variable name.
-    if is_word(value):  # If so, converts it to the value.
+    value = arguments.variable # Could be a variable name.
+    if is_word(value): # If so, converts it to the value.
         variable_name = value
         value = os.getenv(variable_name)
     manipulator = VariableManipulator(value, separator=arguments.sep)
