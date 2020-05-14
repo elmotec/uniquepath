@@ -44,10 +44,10 @@ def is_word(val):
 
 
 def normalize(pth):
-    """Calls os.path.normpath and add double quotes if necessary."""
+    """Calls os.path.normpath."""
     norm_pth = os.path.normpath(pth)
-    if " " in norm_pth and (norm_pth[0] != '"' or norm_pth[-1] != '"'):
-        norm_pth = '"' + norm_pth + '"'
+    #if " " in norm_pth and (norm_pth[0] != '"' or norm_pth[-1] != '"'):
+    #    norm_pth = '"' + norm_pth + '"'
     return norm_pth
 
 
