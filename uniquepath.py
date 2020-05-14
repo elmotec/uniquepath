@@ -24,7 +24,7 @@
 # THE SOFTWARE.
 
 
-__version__ = '1.00' # update setup.py when changing this line.
+__version__ = '1.1' # update setup.py when changing this line.
 __author__ = 'Jerome Lecomte'
 __license__ = 'MIT'
 
@@ -44,8 +44,10 @@ def is_word(val):
 
 
 def normalize(pth):
-    """Simply calls os.path.normpath for now."""
+    """Calls os.path.normpath and add double quotes if necessary."""
     norm_pth = os.path.normpath(pth)
+    if " " in norm_pth and (norm_pth[0] != '"' or norm_pth[-1] != '"'):
+        norm_pth = '"' + norm_pth + '"'
     return norm_pth
 
 
